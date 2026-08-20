@@ -2,7 +2,7 @@ from ultralytics import YOLO
 
 # 1. Cargar tu modelo entrenado
 # YOLO guarda el mejor resultado por defecto en esta ruta:
-ruta_modelo = "runs/segment/modelo_puerta_seg-3/weights/best.pt" 
+ruta_modelo = "runs/detect/modelo_puerta_det/weights/best.pt" 
 model = YOLO(ruta_modelo)
 
 def main():

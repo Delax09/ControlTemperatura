@@ -1,14 +1,14 @@
 from ultralytics import YOLO
 
-model = YOLO("yolov8n-seg.pt")
+model = YOLO("yolov8n.pt")
 def main():
     print("Iniciando entrenamiento...")
     results = model.train(
         data="data.yaml",
-        epochs=50,
+        epochs=60,
         imgsz=640,
         batch=8,
-        name="modelo_puerta_seg",
+        name="modelo_puerta_det",
         device="cpu",
         patience=20,
         plots=True

@@ -1,8 +1,8 @@
-task: segment
+task: detect
 mode: train
-model: yolov8n-seg.pt
+model: yolov8n.pt
 data: data.yaml
-epochs: 100
+epochs: 60
 time: null
 patience: 20
 batch: 8
@@ -13,7 +13,7 @@ cache: false
 device: cpu
 workers: 8
 project: null
-name: modelo_puerta_seg-2
+name: modelo_puerta_det
 exist_ok: false
 pretrained: true
 cls_remap: true
@@ -113,4 +113,4 @@ auto_augment: randaugment
 erasing: 0.4
 cfg: null
 tracker: tracktrack.yaml
-save_dir: C:\Users\fmejias\OneDrive - Alimentos y Frutos S.A\Escritorio\ControlTemp\runs\segment\modelo_puerta_seg-2
+save_dir: C:\Users\fmejias\OneDrive - Alimentos y Frutos S.A\Escritorio\ControlTemp\runs\detect\modelo_puerta_det
