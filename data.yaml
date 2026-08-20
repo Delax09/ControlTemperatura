@@ -1,5 +1,5 @@
-train: ./dataset/train/images
-val: ./dataset/valid/images
+train: C:/Users/fmejias/OneDrive - Alimentos y Frutos S.A/Escritorio/ControlTemp/dataset/train/images
+val: C:/Users/fmejias/OneDrive - Alimentos y Frutos S.A/Escritorio/ControlTemp/dataset/valid/images
 
 nc: 2
 names: ['puerta_abierta', 'puerta_cerrada']
