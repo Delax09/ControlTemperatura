@@ -5,7 +5,7 @@ def main():
     print("Iniciando entrenamiento...")
     results = model.train(
         data="data.yaml",
-        epochs=100,
+        epochs=50,
         imgsz=640,
         batch=8,
         name="modelo_puerta_seg",
