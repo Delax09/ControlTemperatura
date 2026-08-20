@@ -1,4 +1,5 @@
 from ultralytics import YOLO
+from pathlib import Path
 
 # 1. Cargar tu modelo entrenado
 # YOLO guarda el mejor resultado por defecto en esta ruta:
@@ -6,24 +7,22 @@ ruta_modelo = "runs/detect/modelo_puerta_det/weights/best.pt"
 model = YOLO(ruta_modelo)
 
 def main():
-    print("Iniciando reconocimiento en el video...")
+    print("Iniciando reconocimiento...")
     
-    # 2. Archivo de video a analizar
-    video_prueba = "VideoPrueba.mp4"  # Cambia esto por la ruta a tu video de prueba
+    # Puede ser una imagen (.jpg, .jpeg, .png) o un video (.mp4, .avi, .mov)
+    entrada_prueba = Path("Puerta.png")
+    if not entrada_prueba.is_file():
+        raise FileNotFoundError(f"No se encontró el archivo de entrada: {entrada_prueba}")
     
-    # 3. Ejecutar la predicción
-    # show=True: Muestra una ventana con el video y las detecciones en tiempo real.
-    # save=True: Guarda el video resultante con las cajas dibujadas.
-    # conf=0.5: Solo muestra detecciones de las que esté al menos 50% seguro.
     resultados = model.predict(
-        source=video_prueba,
+        source=str(entrada_prueba),
         show=True,       
         save=True,       
         conf=0.5         
     )
     
     print("¡Reconocimiento finalizado!")
-    print("El video con las predicciones se guardó automáticamente en la carpeta: runs/detect/predict/")
+    print("El resultado con las predicciones se guardó en la carpeta: runs/detect/predict/")
 
 if __name__ == '__main__':
     main()
