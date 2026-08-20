@@ -1,5 +1,9 @@
 train: C:/Users/fmejias/OneDrive - Alimentos y Frutos S.A/Escritorio/ControlTemp/dataset/train/images
 val: C:/Users/fmejias/OneDrive - Alimentos y Frutos S.A/Escritorio/ControlTemp/dataset/valid/images
 
-nc: 2
-names: ['puerta_abierta', 'puerta_cerrada']
+nc: 3
+
+names:
+  - puerta_abierta
+  - puerta_cerrada
+  - puerta_medio_abierta
