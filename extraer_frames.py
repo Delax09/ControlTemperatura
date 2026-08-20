@@ -2,9 +2,9 @@ import cv2
 import os
 
 # Nombre de tu archivo de video
-video_path = "VideoEntrenar2.mp4"
+video_path = "VideoPrueba.mp4"
 # Carpeta donde se guardarán las imágenes
-output_folder = "dataset_puerta2"
+output_folder = "dataset_puerta_prueba"
 
 # Crea la carpeta si no existe
 if not os.path.exists(output_folder):
