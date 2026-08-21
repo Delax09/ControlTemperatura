@@ -4,6 +4,7 @@ dataset_puerta*/
 Images/
 runs/
 Videos/
+alertas/*
 
 # Model weights
 *.pt
