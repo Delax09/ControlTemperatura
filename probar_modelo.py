@@ -8,7 +8,7 @@ import cv2
 from ultralytics import YOLO
 
 # --- CONFIGURACIÓN GLOBAL ---
-MODEL_PATH = "runs/detect/modelo_puerta_det-3/weights/best.pt"
+MODEL_PATH = "runs/detect/modelo_puerta_det/weights/best.pt"
 OUTPUT_DIR = "alertas"
 JSON_FILE = "registro_tiempos_puerta.json"
 JSON_LOG_PATH = os.path.join(OUTPUT_DIR, JSON_FILE)
