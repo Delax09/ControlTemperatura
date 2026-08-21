@@ -1,20 +1,22 @@
 import os
 import json
-import cv2
+import time
 import unicodedata
 from datetime import datetime
 from pathlib import Path
+import cv2
 from ultralytics import YOLO
 
 # --- CONFIGURACIÓN GLOBAL ---
 MODEL_PATH = "runs/detect/modelo_puerta_det-3/weights/best.pt"
-OUTPUT_DIR = "alertas"  # Carpeta de salida para el registro de alertas
-JSON_FILE = "alertas_puerta.json"
+OUTPUT_DIR = "alertas"
+JSON_FILE = "registro_tiempos_puerta.json"
 JSON_LOG_PATH = os.path.join(OUTPUT_DIR, JSON_FILE)
 
 TARGET_CLASS = "puerta_abierta"
-CONF_THRESHOLD = 0.50 
-VIDEO_PATH = Path("Videos/VideoEntrenar9.mp4")  # Usa 0 para webcam o la ruta al archivo de video 
+CONF_THRESHOLD = 0.50
+VIDEO_PATH = Path("Videos/VideoEntrenar9.mp4")  # Usa 0 para webcam o ruta a video
+TOLERANCIA_DESAPARICION_SEG = 1.0  # Segundos de gracia antes de considerar la puerta cerrada
 
 
 def normalizar_texto(texto: str) -> str:
@@ -24,86 +26,146 @@ def normalizar_texto(texto: str) -> str:
     return limpio.lower().replace("_", " ").strip()
 
 
-def registrar_alerta(confianza: float, etiqueta: str, json_path: str = JSON_LOG_PATH):
-    """Guarda un registro de alerta dentro del archivo JSON en la carpeta especificada."""
-    # Asegurar que el directorio de salida exista
+def registrar_duracion(inicio_iso: str, fin_iso: str, duracion: float, confianzas: list, json_path: str = JSON_LOG_PATH):
+    """Guarda en JSON el evento consolidado con el tiempo total que la puerta estuvo abierta."""
     directorio = os.path.dirname(json_path)
     if directorio:
         os.makedirs(directorio, exist_ok=True)
 
-    nueva_alerta = {
-        "timestamp": datetime.now().isoformat(), 
-        "evento": "puerta_abierta", 
-        "etiqueta_detectada": etiqueta,
-        "confianza": round(float(confianza), 2) 
+    conf_promedio = round(sum(confianzas) / len(confianzas), 2) if confianzas else 0.0
+
+    nuevo_registro = {
+        "evento": "puerta_abierta",
+        "hora_apertura": inicio_iso,
+        "hora_cierre": fin_iso,
+        "duracion_segundos": round(duracion, 2),
+        "confianza_promedio": conf_promedio
     }
 
     datos = []
-    if os.path.exists(json_path): 
+    if os.path.exists(json_path):
         try:
-            with open(json_path, "r", encoding="utf-8") as f: 
-                contenido = json.load(f) 
+            with open(json_path, "r", encoding="utf-8") as f:
+                contenido = json.load(f)
                 if isinstance(contenido, list):
                     datos = contenido
-        except (json.JSONDecodeError, FileNotFoundError): 
-            datos = [] 
+        except (json.JSONDecodeError, FileNotFoundError):
+            datos = []
 
-    datos.append(nueva_alerta) 
+    datos.append(nuevo_registro)
 
-    with open(json_path, "w", encoding="utf-8") as f: 
-        json.dump(datos, f, indent=4, ensure_ascii=False) 
+    with open(json_path, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
 
-    print(f"[ALERTA REGISTRADA en {json_path}] {nueva_alerta}") 
+    print(f"\n[EVENTO REGISTRADO] Puerta abierta durante {nuevo_registro['duracion_segundos']}s -> Guardado en {json_path}\n")
 
 
 def procesar_fuente(modelo: YOLO, fuente, target_class: str = TARGET_CLASS, conf_threshold: float = CONF_THRESHOLD):
-    """Lee fotograma a fotograma la fuente (cámara o video), detecta objetos y registra alertas."""
-    # Convertir Path a string o int si es número
+    """Monitorea el video/cámara, calcula el tiempo transcurrido y registra el evento al cerrarse."""
     origen = str(fuente) if isinstance(fuente, Path) else fuente
-    cap = cv2.VideoCapture(origen) 
+    cap = cv2.VideoCapture(origen)
 
     if not cap.isOpened():
         raise RuntimeError(f"No se pudo abrir la fuente de video/cámara: {fuente}")
 
     target_normalizado = normalizar_texto(target_class)
-    print(f"Buscando objetivo: '{target_class}' (clases del modelo: {modelo.names})")
+    
+    # Variables de control de estado
+    puerta_abierta = False
+    inicio_apertura_epoch = None
+    inicio_apertura_iso = None
+    ultimo_momento_detectada = None
+    confianzas_acumuladas = []
 
-    while cap.isOpened(): 
-        ret, frame = cap.read() 
+    while cap.isOpened():
+        ret, frame = cap.read()
         if not ret:
-            break 
+            break
 
-        resultados = modelo(frame, conf=conf_threshold, verbose=False) 
+        resultados = modelo(frame, conf=conf_threshold, verbose=False)
+        momento_actual = time.time()
+        detectada_en_frame = False
 
-        for r in resultados: 
-            for box in r.boxes: 
-                cls_id = int(box.cls[0]) 
-                label_real = modelo.names[cls_id] 
-                conf = float(box.conf[0]) 
+        for r in resultados:
+            for box in r.boxes:
+                cls_id = int(box.cls[0])
+                label_real = modelo.names[cls_id]
+                conf = float(box.conf[0])
 
                 if normalizar_texto(label_real) == target_normalizado:
-                    registrar_alerta(confianza=conf, etiqueta=label_real) 
+                    detectada_en_frame = True
+                    confianzas_acumuladas.append(conf)
 
-        # Mostrar visualización
-        cv2.imshow("Monitoreo de Detección", resultados[0].plot()) 
-        if cv2.waitKey(1) & 0xFF == ord('q'): 
-            break 
+        # Transición: La puerta se acaba de abrir
+        if detectada_en_frame:
+            ultimo_momento_detectada = momento_actual
+            if not puerta_abierta:
+                puerta_abierta = True
+                inicio_apertura_epoch = momento_actual
+                inicio_apertura_iso = datetime.now().isoformat(timespec='seconds')
+                confianzas_acumuladas = [conf]
+                print(f"[{inicio_apertura_iso}] Puerta detectada: ABIERTA")
 
-    cap.release() 
-    cv2.destroyAllWindows() 
+        # Transición: La puerta se cerró (tras superar el margen de tolerancia)
+        elif puerta_abierta:
+            if (momento_actual - ultimo_momento_detectada) > TOLERANCIA_DESAPARICION_SEG:
+                fin_apertura_iso = datetime.now().isoformat(timespec='seconds')
+                duracion_total = ultimo_momento_detectada - inicio_apertura_epoch
+
+                registrar_duracion(
+                    inicio_iso=inicio_apertura_iso,
+                    fin_iso=fin_apertura_iso,
+                    duracion=duracion_total,
+                    confianzas=confianzas_acumuladas
+                )
+
+                # Reset de estado
+                puerta_abierta = False
+                inicio_apertura_epoch = None
+                inicio_apertura_iso = None
+                confianzas_acumuladas = []
+
+        # Mostrar duración en tiempo real sobre el video
+        frame_mostrar = resultados[0].plot()
+        if puerta_abierta and inicio_apertura_epoch:
+            segundos_activa = int(momento_actual - inicio_apertura_epoch)
+            cv2.putText(
+                frame_mostrar,
+                f"Abierta: {segundos_activa}s",
+                (30, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1.0,
+                (0, 0, 255),
+                2
+            )
+
+        cv2.imshow("Monitoreo de Puerta", frame_mostrar)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    # Si el video termina con la puerta todavía abierta, cerrar y registrar el evento
+    if puerta_abierta and inicio_apertura_epoch:
+        fin_apertura_iso = datetime.now().isoformat(timespec='seconds')
+        duracion_total = (ultimo_momento_detectada or time.time()) - inicio_apertura_epoch
+        registrar_duracion(
+            inicio_iso=inicio_apertura_iso,
+            fin_iso=fin_apertura_iso,
+            duracion=duracion_total,
+            confianzas=confianzas_acumuladas
+        )
+
+    cap.release()
+    cv2.destroyAllWindows()
 
 
 def main():
-    print("Iniciando reconocimiento...") 
+    print("Iniciando monitoreo de tiempos de apertura...")
 
-    # Validar archivo si es una ruta local
-    if isinstance(VIDEO_PATH, Path) and not VIDEO_PATH.is_file(): 
-        raise FileNotFoundError(f"No se encontró el archivo de entrada: {VIDEO_PATH}") 
+    if isinstance(VIDEO_PATH, Path) and not VIDEO_PATH.is_file():
+        raise FileNotFoundError(f"No se encontró el archivo de entrada: {VIDEO_PATH}")
 
-    # Cargar modelo
-    modelo = YOLO(MODEL_PATH) 
+    modelo = YOLO(MODEL_PATH)
 
-    # Procesar fuente y disparar alertas
     procesar_fuente(
         modelo=modelo,
         fuente=VIDEO_PATH,
@@ -111,8 +173,8 @@ def main():
         conf_threshold=CONF_THRESHOLD
     )
 
-    print(f"Proceso finalizado. Registros guardados en: {JSON_LOG_PATH}")
+    print(f"Monitoreo finalizado. Registros guardados en: {JSON_LOG_PATH}")
 
 
 if __name__ == '__main__':
-    main() 
+    main()
