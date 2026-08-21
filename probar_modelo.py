@@ -10,7 +10,7 @@ def main():
     print("Iniciando reconocimiento...")
     
     # Puede ser una imagen (.jpg, .jpeg, .png) o un video (.mp4, .avi, .mov)
-    entrada_prueba = Path("Puerta.png")
+    entrada_prueba = Path("Images/ImagenCortina3.png")
     if not entrada_prueba.is_file():
         raise FileNotFoundError(f"No se encontró el archivo de entrada: {entrada_prueba}")
     
