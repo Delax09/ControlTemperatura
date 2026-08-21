@@ -3,14 +3,14 @@ from pathlib import Path
 
 # 1. Cargar tu modelo entrenado
 # YOLO guarda el mejor resultado por defecto en esta ruta:
-ruta_modelo = "runs/detect/modelo_puerta_det/weights/best.pt" 
+ruta_modelo = "runs/detect/modelo_puerta_det-3/weights/best.pt" 
 model = YOLO(ruta_modelo)
 
 def main():
     print("Iniciando reconocimiento...")
     
     # Puede ser una imagen (.jpg, .jpeg, .png) o un video (.mp4, .avi, .mov)
-    entrada_prueba = Path("Images/ImagenCortina3.png")
+    entrada_prueba = Path("Videos/VideoEntrenar9.mp4")
     if not entrada_prueba.is_file():
         raise FileNotFoundError(f"No se encontró el archivo de entrada: {entrada_prueba}")
     
