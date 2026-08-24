@@ -5,6 +5,7 @@ Images/
 runs/
 Videos/
 alertas/*
+videos_entrenamiento/*
 
 # Model weights
 *.pt
