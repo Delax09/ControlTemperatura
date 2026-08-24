@@ -1,7 +1,7 @@
 import cv2
 import os
 
-numero_video = 10
+numero_video = 11
 # Nombre de tu archivo de video
 video_path = f"Videos/VideoEntrenar{numero_video}.mp4"
 # Carpeta donde se guardarán las imágenes

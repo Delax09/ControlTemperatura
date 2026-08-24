@@ -15,7 +15,7 @@ JSON_LOG_PATH = os.path.join(OUTPUT_DIR, JSON_FILE)
 
 TARGET_CLASS = "puerta_abierta"
 CONF_THRESHOLD = 0.50
-VIDEO_PATH = Path("Videos/VideoEntrenar9.mp4")  # Usa 0 para webcam o ruta a video
+VIDEO_PATH = Path("Videos/VideoEntrenar10.mp4")  # Usa 0 para webcam o ruta a video
 TOLERANCIA_DESAPARICION_SEG = 1.0  # Segundos de gracia antes de considerar la puerta cerrada
 
 
