@@ -281,18 +281,22 @@ function cardHTML(e){
           <span class="tick" style="left:${UMBRAL_SER/UMBRAL_CRIT*100}%"></span>
         </div>
       </div>
-      <div class="foot">
-        <div style="display:flex;gap:22px">
-          <div class="kv">Aperturas hoy<b>${e.aperturas}</b></div>
-          <div class="kv">Min. abierta<b>${e.minutosHoy.toFixed(1)}</b></div>
+        <div class="foot" style="flex-direction: column; align-items: stretch; gap: 14px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; width: 100%;">
+          <div style="display:flex;gap:22px">
+            <div class="kv">Aperturas hoy<b>${e.aperturas}</b></div>
+            <div class="kv">Min. abierta<b>${e.minutosHoy.toFixed(1)}</b></div>
+          </div>
+          <div class="sparkwrap">
+            <div class="spark">${e.hist.map(h=>{
+              const c = h>=UMBRAL_CRIT?'var(--crit)':h>=UMBRAL_SER?'var(--serious)':h>=UMBRAL_WARN?'var(--warn)':'#3a3a37';
+              return `<div style="height:${Math.max(4,h/maxh*30)}px;background:${c}" title="${mmss(h)}"></div>`;
+            }).join('')}</div>
+            <small>últimas 10 aperturas</small>
+          </div>
         </div>
-        <div class="sparkwrap">
-          <div class="spark">${e.hist.map(h=>{
-            const c = h>=UMBRAL_CRIT?'var(--crit)':h>=UMBRAL_SER?'var(--serious)':h>=UMBRAL_WARN?'var(--warn)':'#3a3a37';
-            return `<div style="height:${Math.max(4,h/maxh*30)}px;background:${c}" title="${mmss(h)}"></div>`;
-          }).join('')}</div>
-          <small>últimas 10 aperturas</small>
-        </div>
+        <!-- Inyección del botón condicional para PSP-01 -->
+        ${e.id === 'PSP-01' ? '<button class="btn" onclick="lanzarModelo(this)" style="background:#3987e5; border-color:#3987e5; color:white; font-weight:600; width:100%; padding: 10px;">▶ INICIAR CÁMARA YOLO</button>' : ''}
       </div>
     </div>
     <div class="ghost">⚠ Cámara sin señal — verificar PoE</div>
@@ -360,7 +364,36 @@ document.getElementById('filtro').addEventListener('click',ev=>{
   const b=ev.target.closest('button'); if(!b) return;
   ev.currentTarget.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed', x===b)); render();
 });
+/* ==== Ejecución de Modelo YOLO ==== */
+function lanzarModelo(btn) {
+  // Cambiar aspecto del botón mientras carga
+  const textoOriginal = btn.innerHTML;
+  btn.innerHTML = '⏳ Iniciando modelo...';
+  btn.style.background = 'var(--surface-2)';
+  btn.disabled = true;
 
+  fetch('/api/ejecutar-modelo/')
+    .then(response => response.json())
+    .then(data => {
+      if(data.status === 'ok') {
+          btn.innerHTML = '✅ MODELO EN EJECUCIÓN';
+          btn.style.background = 'var(--good)';
+          btn.style.borderColor = 'var(--good)';
+          console.log(data.message);
+      } else {
+          alert("Hubo un error al ejecutar el script: " + data.message);
+          btn.innerHTML = textoOriginal;
+          btn.style.background = '#3987e5';
+          btn.disabled = false;
+      }
+    })
+    .catch(error => {
+      console.error('Error de red:', error);
+      btn.innerHTML = textoOriginal;
+      btn.style.background = '#3987e5';
+      btn.disabled = false;
+    });
+}
 pintarReloj(); render();
 setInterval(tick,1000);
 setInterval(pintarReloj,1000);
