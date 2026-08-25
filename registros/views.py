@@ -14,7 +14,7 @@ class EventoPuertaViewSet(viewsets.ModelViewSet):
     serializer_class = EventoPuertaSerializer
 
 def dashboard_view(request):
-    return render(request, 'dashboards.html')
+    return render(request, 'dashboard.html')
 
 # --- NUEVA VISTA PARA EJECUTAR YOLO ---
 def ejecutar_script_modelo(request):
