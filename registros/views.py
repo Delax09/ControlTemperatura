@@ -8,3 +8,6 @@ from .serializers import EventoPuertaSerializer
 class EventoPuertaViewSet(viewsets.ModelViewSet):
     queryset = EventoPuerta.objects.all().order_by('-hora_apertura')
     serializer_class = EventoPuertaSerializer
+
+def dashboard_view(request):
+    return render(request, 'dashboard.html')

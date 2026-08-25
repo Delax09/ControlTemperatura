@@ -19,7 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
-from registros.views import EventoPuertaViewSet
+from registros.views import EventoPuertaViewSet, dashboard_view
 
 router = DefaultRouter()
 router.register(r'eventos', EventoPuertaViewSet, basename='evento')
@@ -27,6 +27,8 @@ router.register(r'eventos', EventoPuertaViewSet, basename='evento')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    path('', dashboard_view, name='dashboard'),
+
 ]
 
 # Servir archivos de la carpeta alertas en desarrollo
