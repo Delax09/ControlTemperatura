@@ -4,7 +4,7 @@ model = YOLO("yolov8n.pt")
 def main():
     print("Iniciando entrenamiento...")
     results = model.train(
-        data="data.yaml",
+        data="dataset\data.yaml",
         epochs=60,
         imgsz=640,
         batch=8,

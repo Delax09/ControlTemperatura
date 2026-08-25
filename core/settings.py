@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     # Librerías de terceros
     'rest_framework',
+    'rest_framework.authtoken',
     
     # Tus aplicaciones
     'registros',
