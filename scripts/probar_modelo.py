@@ -4,7 +4,7 @@ import requests
 from datetime import datetime
 from ultralytics import YOLO
 
-RUTA_VIDEO = "Videos/VideoEntrenar9.mp4"
+RUTA_VIDEO = "Videos/VideoEntrenar10.mp4"
 RUTA_MODELO = "runs/detect/modelo_puerta_det/weights/best.pt"
 API_URL = "http://127.0.0.1:8000/api/eventos/"
 TOKEN_API = TOKEN_API = os.getenv('DJANGO_TOKEN_API')
