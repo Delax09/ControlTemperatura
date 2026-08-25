@@ -14,3 +14,5 @@ videos_entrenamiento/*
 __pycache__/
 *.py[cod]
 */dataset_puerta_prueba
+
+.env
