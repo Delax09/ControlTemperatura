@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>P1 · Muro de Control — Puertas Cámaras de Frío</title>
 <link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/modal-alerta.css' %}">
 </head>
 <body>
 <div class="wrap">
@@ -56,11 +57,16 @@
   <div class="grid" id="grid"></div>
 
   <footer>
-    Muro de control en vivo conectado a Django API · Pensado para pantalla de 55" en sala de despacho · <kbd>F11</kbd> pantalla completa
+    Muro de control en vivo conectado a Django API · Click en una puerta para ver el detalle · Pensado para pantalla de 55" en sala de despacho · <kbd>F11</kbd> pantalla completa
   </footer>
 </div>
 
+{% include 'partials/modal_alerta.html' %}
+
 <script src="{% static 'dashboard/js/cam-thumbs.js' %}"></script>
 <script src="{% static 'dashboard/js/dashboard.js' %}"></script>
+<script src="{% static 'dashboard/js/temp-sim.js' %}"></script>
+<script src="{% static 'dashboard/js/temp-chart.js' %}"></script>
+<script src="{% static 'dashboard/js/modal-alerta.js' %}"></script>
 </body>
 </html>

@@ -1,0 +1,161 @@
+/* ==== Modal de detalle / centro de alertas ====
+   Se abre al hacer click en una card del muro (ver modal-alerta.js).
+   Usa los mismos tokens de color definidos en dashboard.css */
+
+.modal{
+  border:1px solid var(--ring);
+  background:var(--surface);
+  color:var(--ink);
+  border-radius:16px;
+  padding:0;
+  width:min(1000px, calc(100vw - 32px));
+  max-height:calc(100vh - 48px);
+  overflow:hidden;
+  font-family:var(--font);
+  font-size:14px;
+}
+.modal::backdrop{
+  background:rgba(6,6,6,.72);
+  backdrop-filter:blur(3px);
+}
+.modal[open]{display:flex;flex-direction:column;animation:modalIn .18s ease-out}
+@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){
+  .modal[open]{animation:none}
+  .m-step.active::before{animation:none}
+}
+
+/* ---------- Encabezado ---------- */
+.m-head{
+  padding:18px 20px;
+  border-bottom:1px solid var(--line);
+  display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;
+}
+.m-head .who{min-width:0;flex:1}
+.m-head h2{margin:0;font-size:18px;font-weight:650;letter-spacing:-.3px}
+.m-head h2 .id{font-size:12px;color:var(--muted);font-weight:400;margin-left:2px}
+.m-head .zona{font-size:12px;color:var(--muted);margin-top:4px}
+.m-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.m-chip{font-size:10px;padding:3px 8px;border-radius:5px;background:var(--surface-2);
+        color:var(--ink-2);border:1px solid var(--ring);white-space:nowrap}
+.m-chip.pend{border-style:dashed;color:var(--muted)}
+.m-big{text-align:right;flex-shrink:0}
+.m-big .n{font-size:38px;font-weight:700;letter-spacing:-1.5px;
+          font-variant-numeric:tabular-nums;line-height:1}
+.m-big .c{font-size:11px;color:var(--muted);margin-top:4px}
+.m-close{background:var(--surface-2);border:1px solid var(--ring);color:var(--ink-2);
+         border-radius:8px;width:32px;height:32px;font-size:16px;line-height:1;
+         cursor:pointer;font-family:inherit;flex-shrink:0}
+.m-close:hover{background:var(--surface-3);color:var(--ink)}
+
+/* ---------- Acciones ---------- */
+.m-actions{display:flex;gap:8px;flex-wrap:wrap;padding:13px 20px;border-bottom:1px solid var(--line)}
+
+/* ---------- Cuerpo ---------- */
+.m-body{display:grid;grid-template-columns:1fr 1fr;gap:0;overflow-y:auto;min-height:0}
+@media (max-width:820px){.m-body{grid-template-columns:1fr}}
+.m-col{padding:17px 20px;min-width:0}
+.m-col + .m-col{border-left:1px solid var(--line)}
+@media (max-width:820px){.m-col + .m-col{border-left:0;border-top:1px solid var(--line)}}
+.m-lab{font-size:11px;color:var(--muted);text-transform:uppercase;
+       letter-spacing:.5px;margin-bottom:11px}
+.m-lab + .m-lab{margin-top:20px}
+
+/* ---------- Escalera de escalamiento ---------- */
+.m-ladder{position:relative;padding-left:26px}
+.m-ladder::before{content:"";position:absolute;left:8px;top:6px;bottom:10px;width:2px;background:var(--line)}
+.m-step{position:relative;padding:0 0 17px}
+.m-step::before{content:"";position:absolute;left:-22px;top:3px;width:12px;height:12px;
+                border-radius:50%;background:var(--surface);border:2px solid var(--line)}
+.m-step.done::before{background:var(--good);border-color:var(--good)}
+.m-step.active::before{background:var(--crit);border-color:var(--crit);animation:mPulse 1.5s infinite}
+@keyframes mPulse{0%,100%{box-shadow:0 0 0 0 rgba(208,59,59,.6)}70%{box-shadow:0 0 0 8px rgba(208,59,59,0)}}
+.m-step b{font-size:12.5px;display:block;font-variant-numeric:tabular-nums}
+.m-step span{font-size:11.5px;color:var(--muted);display:block;margin-top:3px;line-height:1.5}
+.m-step.pend b,.m-step.pend span{opacity:.42}
+
+/* ---------- Bitácora ---------- */
+.m-log{font-size:12px}
+.m-log div{display:grid;grid-template-columns:52px 1fr;gap:10px;padding:7px 0;
+           border-bottom:1px dashed var(--line)}
+.m-log div:last-child{border-bottom:0}
+.m-log time{color:var(--muted);font-variant-numeric:tabular-nums}
+.m-log em{font-style:normal;color:var(--ink)}
+.m-log .fut{opacity:.4}
+
+/* ---------- Panel de temperatura ---------- */
+.m-box{background:var(--surface-2);border:1px solid var(--ring);border-radius:11px;
+       padding:13px 14px;margin-top:4px}
+.m-box .row{display:flex;justify-content:space-between;gap:12px;font-size:12px;
+            color:var(--muted);align-items:baseline}
+.m-box .row + .row{margin-top:9px}
+.m-box b{color:var(--ink);font-variant-numeric:tabular-nums}
+.m-box b.drift{color:var(--serious)}
+.m-gauge{height:6px;background:var(--surface-3);border-radius:4px;overflow:hidden;margin:10px 0}
+.m-gauge i{display:block;height:100%;border-radius:4px;transition:width .4s}
+
+/* ---------- Gráfico de temperatura ---------- */
+.g-wrap{position:relative;margin-top:4px;margin-bottom:12px}
+.g-svg{width:100%;height:auto;display:block;overflow:visible}
+.g-vacio{font-size:11.5px;color:var(--muted);padding:18px 0;text-align:center}
+
+/* Grilla y ejes: recesivos, nunca compiten con la serie */
+.g-grid{stroke:#333331;stroke-width:1;vector-effect:non-scaling-stroke}
+.g-ylab{fill:var(--muted);font-size:9px;text-anchor:end;font-variant-numeric:tabular-nums}
+.g-xlab{fill:var(--muted);font-size:9px;text-anchor:middle;font-variant-numeric:tabular-nums}
+.g-xlab.g-ahora{fill:var(--ink-2)}
+
+/* Banda de umbral: aquí el color cálido sí significa estado, y va con etiqueta */
+.g-banda{fill:rgba(236,131,90,.10)}
+.g-umbral{fill:var(--serious);font-size:8.5px;text-anchor:end;opacity:.85;letter-spacing:.3px}
+
+/* Referencia del set point */
+.g-set{stroke:var(--muted);stroke-width:1;stroke-dasharray:3 3;
+       opacity:.75;vector-effect:non-scaling-stroke}
+.g-setlab{fill:var(--muted);font-size:8.5px;letter-spacing:.3px}
+
+/* Serie */
+.g-linea{fill:none;stroke:#3987e5;stroke-width:2;stroke-linejoin:round;
+         stroke-linecap:round;vector-effect:non-scaling-stroke}
+.g-fin{fill:#3987e5;stroke:var(--surface-2);stroke-width:2;vector-effect:non-scaling-stroke}
+
+/* Capa de hover */
+.g-cruz{stroke:var(--ink-2);stroke-width:1;stroke-dasharray:2 2;
+        opacity:.5;vector-effect:non-scaling-stroke}
+.g-hover{fill:var(--ink);stroke:#3987e5;stroke-width:2;vector-effect:non-scaling-stroke}
+.g-tip{position:absolute;transform:translate(-50%,-118%);
+       background:var(--surface-3);border:1px solid var(--ring);border-radius:8px;
+       padding:6px 9px;font-size:11px;line-height:1.4;white-space:nowrap;
+       pointer-events:none;opacity:0;transition:opacity .12s;
+       box-shadow:0 6px 18px rgba(0,0,0,.5);z-index:2}
+.g-tip.on{opacity:1}
+.g-tip b{display:block;font-size:13px;font-variant-numeric:tabular-nums}
+.g-tip span{color:var(--muted);font-variant-numeric:tabular-nums}
+.g-tip em{display:block;font-style:normal;color:var(--serious);font-size:10px;margin-top:2px}
+
+/* ---------- Historial de aperturas ---------- */
+.m-hist{display:flex;align-items:flex-end;gap:5px;height:64px;margin-top:2px}
+.m-hist div{flex:1;min-width:5px;border-radius:3px 3px 0 0;background:#3a3a37;position:relative}
+.m-hist-foot{display:flex;justify-content:space-between;font-size:10.5px;
+             color:var(--muted);margin-top:7px}
+
+/* ---------- Nota / pendientes ---------- */
+.m-note{width:100%;background:var(--surface-2);border:1px solid var(--ring);border-radius:10px;
+        color:var(--ink);font-family:inherit;font-size:12.5px;padding:10px 12px;
+        resize:vertical;min-height:60px}
+.m-pending{font-size:11.5px;color:var(--muted);line-height:1.6;
+           border-left:2px solid var(--line);padding-left:11px;margin-top:6px}
+.m-pending b{color:var(--ink-2);font-weight:500}
+.m-pending code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;
+                background:var(--surface-3);border-radius:3px;padding:1px 4px}
+
+.m-foot{padding:12px 20px;border-top:1px solid var(--line);font-size:11px;
+        color:var(--muted);text-align:center}
+
+/* ---------- Toast ---------- */
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:24px;
+       background:var(--surface-3);border:1px solid var(--ring);border-radius:11px;
+       padding:12px 18px;font-size:13px;color:var(--ink);
+       box-shadow:0 14px 40px rgba(0,0,0,.6);opacity:0;
+       transition:opacity .25s, bottom .25s;pointer-events:none;z-index:60}
+.toast.on{opacity:1;bottom:34px}

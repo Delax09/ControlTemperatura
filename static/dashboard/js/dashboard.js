@@ -10,6 +10,10 @@ const mmss = s => String(Math.floor(s/60)).padStart(2,'0')+':'+String(Math.floor
 let estado = [];
 const grid = document.getElementById('grid');
 
+// Momento en que llegaron los últimos datos. El modal lo usa para que su
+// cronómetro siga corriendo entre polls en vez de congelarse 5 segundos.
+window.ultimaActualizacion = Date.now();
+
 /* ==== Conexión a la API (Django) ==== */
 async function fetchDatosBackend() {
   try {
@@ -37,6 +41,7 @@ async function fetchDatosBackend() {
 
     if (response.ok) {
       estado = await response.json();
+      window.ultimaActualizacion = Date.now();
       render();
     } else {
       console.warn("La API no devolvió un estado OK. Usando datos de prueba mientras se conecta el endpoint real.");
@@ -57,8 +62,13 @@ function usarDatosDePrueba(){
     estado = [{
       id: 'PSP-01', nombre: 'ANDÉN PSP 1', zona: 'Andén despacho', cam: 'anden1', tipo: 'anden',
       temp_objetivo: -20.0, temp_actual: -19.5, abierta: true, segundos_abierta: 190,
-      aperturas_hoy: 10, minutos_hoy: 15.2, offline: false, historial_aperturas: [40, 150, 400], ack: 0
+      aperturas_hoy: 10, minutos_hoy: 15.2, offline: false,
+      // Incluye una apertura larga a propósito: hace que la curva simulada de
+      // temperatura recorra el rango completo (-20 a 17 °C) y el gráfico del
+      // modal muestre una excursión real en vez de una línea plana.
+      historial_aperturas: [60, 900, 240, 1500], ack: 0
     }];
+    window.ultimaActualizacion = Date.now();
     render();
   }
 }
@@ -85,7 +95,8 @@ function cardHTML(e){
   const maxh = e.historial_aperturas && e.historial_aperturas.length ? Math.max(...e.historial_aperturas) : 1;
 
   return `
-  <article class="card" data-state="${n}" data-id="${e.id}" data-open="${e.abierta?1:0}">
+  <article class="card" data-state="${n}" data-id="${e.id}" data-open="${e.abierta?1:0}"
+           tabindex="0" role="button" aria-label="Ver detalle de ${e.nombre}">
     <div class="cam">
       ${e.cam && CAM_THUMBS[e.cam] ? `<img src="${CAM_THUMBS[e.cam]}" alt="">` : placeholderCam(e.tipo)}
       <div class="noise"></div><div class="scrim"></div>
@@ -147,6 +158,9 @@ function render(){
       }
   });
   resumen();
+
+  // Si el modal está abierto, se actualiza con los datos nuevos.
+  if(typeof refrescarModalAlerta === 'function') refrescarModalAlerta();
 }
 
 function resumen(){

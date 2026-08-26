@@ -1,6 +1,6 @@
 :root{
   color-scheme: dark;
-  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#232321;
+  --plane:#0d0d0d; --surface:#1a1a19; --surface-2:#232321; --surface-3:#2b2b28;
   --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
   --line:#2c2c2a; --ring:rgba(255,255,255,.10);
   --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
@@ -56,7 +56,9 @@ h1{font-size:16px;margin:0;font-weight:650;letter-spacing:-.2px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
 .card{background:var(--surface);border:1px solid var(--ring);border-radius:14px;overflow:hidden;
       position:relative;transition:border-color .3s, transform .2s}
+.card{cursor:pointer}
 .card:hover{transform:translateY(-2px)}
+.card:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .card[data-state="crit"]{border-color:rgba(208,59,59,.75);box-shadow:0 0 0 1px rgba(208,59,59,.25),0 8px 30px rgba(208,59,59,.15)}
 .card[data-state="serious"]{border-color:rgba(236,131,90,.6)}
 .card[data-state="warn"]{border-color:rgba(250,178,25,.45)}
