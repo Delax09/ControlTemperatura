@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from app.config import API_URL, HEADERS_API, obtener_origen_video
 
 # --- 1. INICIALIZACIÓN ---
-RUTA_MODELO = "runs/detect/modelo_puerta_det/weights/best.pt" 
+RUTA_MODELO = "runs/detect/runs/detect/modelo_puerta_robusto-2/weights/best.pt"
 CLASE_OBJETIVO = "puerta_abierta"
 UMBRAL_CONFIANZA = 0.55
 
