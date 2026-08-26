@@ -16,6 +16,16 @@ class EventoPuertaViewSet(viewsets.ModelViewSet):
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
+def reportes_view(request):
+    """Reporte general consolidado por cámara.
+
+    Por ahora los datos los genera el frontend (reportes-datos.js) porque
+    EventoPuerta todavía no tiene identidad de puerta y no hay de dónde
+    agregarlos. Cuando exista el modelo Puerta, este es el lugar donde
+    construir el consolidado y pasarlo por contexto.
+    """
+    return render(request, 'reportes.html')
+
 # --- NUEVA VISTA PARA EJECUTAR YOLO ---
 def ejecutar_script_modelo(request):
     script_path = os.path.join(settings.BASE_DIR, 'scripts', 'probar_modelo.py')

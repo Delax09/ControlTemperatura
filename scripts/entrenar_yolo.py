@@ -7,10 +7,9 @@ model = YOLO('yolov8s.pt')
 model.train(
     # --- Configuración Base ---
     data='dataset/data.yaml',
-    epochs=120,
-    patience=20,             # Early stopping si mAP no mejora en 20 épocas
+    epochs=60,            
     imgsz=640,
-    batch=16,
+    batch=4,
     device='cpu',                # 0 para GPU, o 'cpu' si no cuentas con GPU dedicada
     workers=4,
 

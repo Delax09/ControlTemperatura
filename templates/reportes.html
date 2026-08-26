@@ -1,0 +1,66 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reporte General · Puertas Cámaras de Frío</title>
+<link rel="stylesheet" href="{% static 'dashboard/css/dashboard.css' %}">
+<link rel="stylesheet" href="{% static 'dashboard/css/reportes.css' %}">
+</head>
+<body>
+<div class="rep">
+
+  <div class="rep-head">
+    <div>
+      <h1>Reporte General · Puertas Cámaras de Frío</h1>
+      <div class="sub">Consolidado por cámara · ranking de exposición y deriva térmica</div>
+    </div>
+    <a class="rep-volver" href="{% url 'dashboard' %}">← Volver al muro de control</a>
+  </div>
+
+  <div class="rep-filtros">
+    <span class="lbl">Ventana</span>
+    <div class="seg" id="rep-ventana">
+      <button aria-pressed="false" data-h="6">6 horas</button>
+      <button aria-pressed="true"  data-h="12">12 horas</button>
+      <button aria-pressed="false" data-h="24">24 horas</button>
+    </div>
+    <span class="rep-gen" id="rep-gen">—</span>
+  </div>
+
+  <div class="rep-kpis" id="rep-kpis"></div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <div>
+        <h2>Ranking por tiempo abierto</h2>
+        <div class="hint">Ordenado por minutos acumulados. La última columna muestra el detalle hora a hora.</div>
+      </div>
+    </div>
+    <div class="panel-body">
+      <div class="hallazgo" id="rep-hallazgo"></div>
+      <div class="tabla-wrap" id="rep-rank"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-body" style="padding-top:16px">
+      <div class="rep-nota">
+        <b>Datos simulados.</b> El backend todavía no tiene identidad de puerta en
+        <code>EventoPuerta</code>, así que no existe de dónde leer un consolidado por cámara.
+        La simulación vive en <code>reportes-datos.js</code> y es determinista: los mismos
+        valores salen siempre y solo cambian al cruzar de hora, para que el ranking no se
+        reordene solo. La deriva térmica no se sortea — se deriva de los minutos abiertos con
+        la misma saturación exponencial que usa <code>temp-sim.js</code>, así que el ranking y
+        la temperatura son coherentes entre sí.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="{% static 'dashboard/js/reportes-datos.js' %}"></script>
+<script src="{% static 'dashboard/js/reportes.js' %}"></script>
+</body>
+</html>

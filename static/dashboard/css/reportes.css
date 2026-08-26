@@ -1,0 +1,76 @@
+/* ==== Reporte general de puertas ====
+   Reutiliza los tokens de color de dashboard.css */
+
+.rep{max-width:1500px;margin:0 auto;padding:18px 20px 60px}
+
+/* ---------- Encabezado ---------- */
+.rep-head{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between;
+          padding:14px 18px;background:var(--surface);border:1px solid var(--ring);border-radius:14px}
+.rep-head h1{font-size:17px;margin:0;font-weight:650;letter-spacing:-.2px}
+.rep-head .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.rep-volver{font-size:12.5px;color:var(--blue);text-decoration:none}
+.rep-volver:hover{text-decoration:underline}
+
+/* ---------- Barra de filtros: una sola fila sobre los gráficos ---------- */
+.rep-filtros{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 14px}
+.rep-filtros .lbl{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.rep-gen{margin-left:auto;font-size:11.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ---------- Tarjetas de resumen ---------- */
+.rep-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:11px;margin-bottom:18px}
+.kpi{background:var(--surface);border:1px solid var(--ring);border-radius:12px;padding:13px 15px}
+.kpi .l{font-size:11px;color:var(--muted);line-height:1.4}
+.kpi .v{font-size:25px;font-weight:650;letter-spacing:-.7px;margin-top:6px;line-height:1;
+        font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:12px;color:var(--ink-2);font-weight:500;letter-spacing:0}
+.kpi .n{font-size:11.5px;color:var(--ink-2);margin-top:5px}
+.kpi.alerta .v{color:var(--serious)}
+.kpi.critico .v{color:var(--crit)}
+
+/* ---------- Paneles ---------- */
+.panel{background:var(--surface);border:1px solid var(--ring);border-radius:14px;margin-bottom:18px}
+.panel-head{padding:14px 18px;border-bottom:1px solid var(--line);
+            display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.panel-head h2{font-size:14px;margin:0;font-weight:620}
+.panel-head .hint{font-size:11.5px;color:var(--muted);margin-top:3px}
+.panel-body{padding:6px 18px 18px}
+
+/* ---------- Tabla de ranking (la barra ES el gráfico) ---------- */
+.tabla-wrap{overflow-x:auto}
+table.rank{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+table.rank th{text-align:left;font-size:10.5px;color:var(--muted);text-transform:uppercase;
+              letter-spacing:.5px;font-weight:500;padding:11px 10px;border-bottom:1px solid var(--line);
+              white-space:nowrap}
+table.rank td{padding:11px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+table.rank tr:last-child td{border-bottom:0}
+table.rank tbody tr:hover{background:#1f1f1d}
+.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pos{color:var(--muted);font-variant-numeric:tabular-nums;width:26px}
+.pnombre{font-weight:600;white-space:nowrap}
+.pzona{font-size:11px;color:var(--muted);margin-top:2px;white-space:nowrap}
+
+/* Barra horizontal: extremo redondeado, anclada al eje izquierdo */
+.barra{position:relative;height:20px;min-width:110px}
+.barra i{display:block;height:100%;background:#3987e5;border-radius:0 4px 4px 0}
+.barra span{position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;
+            padding-left:7px;font-size:11.5px;font-variant-numeric:tabular-nums;color:var(--ink)}
+.barra.tope i{background:#5c9fe8}
+
+/* Deriva térmica con semántica de estado (va con etiqueta, no color solo) */
+.deriva{display:inline-flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
+.deriva i{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+/* Small multiple: minutos abiertos por hora */
+.spark-h{display:flex;align-items:flex-end;gap:1.5px;height:26px;min-width:100px}
+.spark-h div{flex:1;min-width:2px;background:#3a3a37;border-radius:1px 1px 0 0}
+
+.rep-nota{font-size:11.5px;color:var(--muted);line-height:1.6;
+          border-left:2px solid var(--line);padding-left:12px;margin-top:6px}
+.rep-nota b{color:var(--ink-2);font-weight:500}
+.rep-nota code{font-family:ui-monospace,Consolas,monospace;font-size:10.5px;
+               background:var(--surface-2);border-radius:3px;padding:1px 4px}
+
+.hallazgo{background:var(--surface-2);border:1px solid var(--ring);border-left:3px solid var(--serious);
+          border-radius:9px;padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:var(--ink-2);
+          line-height:1.6}
+.hallazgo b{color:var(--ink);font-weight:600}
