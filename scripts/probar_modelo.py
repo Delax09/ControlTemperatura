@@ -13,7 +13,7 @@ from app.config import API_URL, HEADERS_API, obtener_origen_video
 from app.roi_config import SOLAPAMIENTO_MINIMO, ZonaPuerta, cargar_rois
 
 # --- 1. INICIALIZACIÓN ---
-RUTA_MODELO = "runs/detect/runs/detect/modelo_puerta_robusto-2/weights/best.pt"
+RUTA_MODELO = "runs/detect/runs/detect/modelo_puerta_robusto/weights/best.pt"
 CLASE_OBJETIVO = "puerta_abierta"
 UMBRAL_CONFIANZA = 0.55
 
