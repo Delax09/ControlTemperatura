@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 # Importamos todas las vistas desde registros
 from registros.views import (
     EventoPuertaViewSet, dashboard_view, reportes_view, ejecutar_script_modelo,
-    RoleViewSet, UserViewSet, PlantViewSet, ZoneViewSet, 
+    RoleViewSet, UserViewSet, WarehouseViewSet, ZoneViewSet, 
     CameraViewSet, DoorViewSet, EventViewSet, LogsViewSet
 )
 
@@ -19,7 +19,7 @@ router.register(r'eventos', EventoPuertaViewSet, basename='evento')
 # --- Rutas de la API Nueva ---
 router.register(r'roles', RoleViewSet)
 router.register(r'users', UserViewSet)
-router.register(r'plants', PlantViewSet)
+router.register(r'warehouses', WarehouseViewSet)
 router.register(r'zones', ZoneViewSet)
 router.register(r'cameras', CameraViewSet)
 router.register(r'doors', DoorViewSet)

@@ -40,8 +40,8 @@ class User(models.Model):
     def __str__(self):
         return f"{self.name} {self.last_name}"
 
-class Plant(models.Model):
-    plant_id = models.AutoField(primary_key=True)
+class Warehouse(models.Model):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=150)
     address = models.TextField(blank=True, null=True)
 
@@ -51,7 +51,7 @@ class Plant(models.Model):
 class Zone(models.Model):
     zone_id = models.AutoField(primary_key=True)
     name_zone = models.CharField(max_length=100)
-    plant = models.ForeignKey(Plant, on_delete=models.CASCADE)
+    id_warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name_zone

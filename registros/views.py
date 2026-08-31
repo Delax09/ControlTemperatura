@@ -6,9 +6,9 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import viewsets
 
-from .models import EventoPuerta, Role, User, Plant, Zone, Camera, Door, Event, Logs
+from .models import EventoPuerta, Role, User, Warehouse, Zone, Camera, Door, Event, Logs
 from .serializers import (EventoPuertaSerializer, RoleSerializer, UserSerializer, 
-                            PlantSerializer, ZoneSerializer, CameraSerializer, 
+                            WarehouseSerializer, ZoneSerializer, CameraSerializer, 
                             DoorSerializer, EventSerializer, LogsSerializer)
 
 # ==========================================
@@ -43,9 +43,9 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-class PlantViewSet(viewsets.ModelViewSet):
-    queryset = Plant.objects.all()
-    serializer_class = PlantSerializer
+class WarehouseViewSet(viewsets.ModelViewSet):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
 
 class ZoneViewSet(viewsets.ModelViewSet):
     queryset = Zone.objects.all()

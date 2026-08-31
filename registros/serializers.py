@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import EventoPuerta, Role, User, Plant, Zone, Camera, Door, Event, Logs
+from .models import EventoPuerta, Role, User, Warehouse, Zone, Camera, Door, Event, Logs
 
 # --- SERIALIZADOR ANTERIOR ---
 class EventoPuertaSerializer(serializers.ModelSerializer):
@@ -29,9 +29,9 @@ class ZoneSerializer(serializers.ModelSerializer):
         model = Zone
         fields = '__all__'
 
-class PlantSerializer(serializers.ModelSerializer):
+class WarehouseSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Plant
+        model = Warehouse
         fields = '__all__'
 
 class UserSerializer(serializers.ModelSerializer):
