@@ -18,8 +18,12 @@ class EventoPuertaViewSet(viewsets.ModelViewSet):
     queryset = EventoPuerta.objects.all().order_by('-hora_apertura')
     serializer_class = EventoPuertaSerializer
 
-def dashboard_view(request):
-    return render(request, 'dashboard.html')
+def obtener_datos(request):
+    datos = {
+        "temperatura": -20.0,
+        "estado_puerta": "cerrada"
+    }
+    return JsonResponse(datos)
 
 def reportes_view(request):
     return render(request, 'reportes.html')
