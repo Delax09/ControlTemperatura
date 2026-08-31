@@ -4,10 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework.routers import DefaultRouter
 
-# Importamos todas las vistas desde registros
+# El frontend es un servidor aparte (Vite/React, ver frontend_app/). Django
+# solo expone la API; aquí no se sirve ninguna plantilla.
 from registros.views import (
-    EventoPuertaViewSet, dashboard_view, reportes_view, ejecutar_script_modelo,
-    RoleViewSet, UserViewSet, WarehouseViewSet, ZoneViewSet, 
+    EventoPuertaViewSet, ejecutar_script_modelo,
+    RoleViewSet, UserViewSet, WarehouseViewSet, ZoneViewSet,
     CameraViewSet, DoorViewSet, EventViewSet, LogsViewSet
 )
 
@@ -27,14 +28,9 @@ router.register(r'events', EventViewSet) # Después eliminamos la ruta vieja de 
 router.register(r'logs', LogsViewSet)
 
 urlpatterns = [
-    # Panel de Admin y Rutas API
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    
-    # Rutas del Frontend y Scripts (Tus rutas anteriores)
-    path('', dashboard_view, name='dashboard'),
-    path('reportes/', reportes_view, name='reportes'),
-    path('api/ejecutar-modelo/', ejecutar_script_modelo, name='ejecutar-modelo')
+    path('api/ejecutar-modelo/', ejecutar_script_modelo, name='ejecutar-modelo'),
 ]
 
 # Servir archivos de la carpeta alertas en desarrollo

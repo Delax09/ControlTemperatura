@@ -3,7 +3,6 @@ import sys
 import os
 from django.conf import settings
 from django.http import JsonResponse
-from django.shortcuts import render
 from rest_framework import viewsets
 
 from .models import EventoPuerta, Role, User, Warehouse, Zone, Camera, Door, Event, Logs
@@ -24,9 +23,6 @@ def obtener_datos(request):
         "estado_puerta": "cerrada"
     }
     return JsonResponse(datos)
-
-def reportes_view(request):
-    return render(request, 'reportes.html')
 
 def ejecutar_script_modelo(request):
     script_path = os.path.join(settings.BASE_DIR, 'scripts', 'probar_modelo.py')
