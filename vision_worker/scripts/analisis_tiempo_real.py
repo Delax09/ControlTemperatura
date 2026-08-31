@@ -2,7 +2,15 @@ import requests
 from datetime import datetime, timezone
 
 # URL de tu backend (Servidor 1). Si está en otra máquina, cambia el localhost por la IP.
-API_URL = "http://127.0.0.1:8000/api/"
+API_URL = "http://localhost:8000/api/registrar-evento"
+
+def enviar_alerta_backend(datos):
+    try:
+        respuesta = requests.post(API_URL, json=datos)
+        if respuesta.status_code == 200:
+            print("Datos enviados correctamente")
+    except requests.exceptions.ConnectionError:
+        print("Error: No se pudo conectar al Backend Django")
 
 def obtener_puertas_y_rois():
     """Descarga las puertas y sus ROIs desde la base de datos."""

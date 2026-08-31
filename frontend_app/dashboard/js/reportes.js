@@ -1,5 +1,5 @@
 /* ==== Render del reporte general ==== */
-
+const API_URL = 'http://localhost:8000'
 let ventanaHoras = 12;
 let reporte = null;
 
