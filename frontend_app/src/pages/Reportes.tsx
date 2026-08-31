@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom'
 import Kpis from '../components/reportes/Kpis'
 import Hallazgo from '../components/reportes/Hallazgo'
 import RankingTable from '../components/reportes/RankingTable'
+import BotonExportar from '../components/reportes/BotonExportar'
+import Toast from '../components/Toast'
+import { useToast } from '../hooks/useToast'
 import { generarReporte } from '../lib/reportesDatos'
 
 const VENTANAS = [6, 12, 24]
@@ -15,6 +18,7 @@ const REFRESCO_MS = 300000
 export default function Reportes() {
   const [horas, setHoras] = useState(12)
   const [reporte, setReporte] = useState(() => generarReporte(12))
+  const { mensaje, toast } = useToast()
 
   useEffect(() => {
     setReporte(generarReporte(horas))
@@ -29,9 +33,12 @@ export default function Reportes() {
           <h1>Reporte General · Puertas Cámaras de Frío</h1>
           <div className="sub">Consolidado por cámara · ranking de exposición y deriva térmica</div>
         </div>
-        <Link className="rep-volver" to="/">
-          ← Volver al muro de control
-        </Link>
+        <div className="rep-head-acc">
+          <Link className="rep-volver" to="/">
+            ← Volver al muro de control
+          </Link>
+          <BotonExportar reporte={reporte} onAviso={toast} />
+        </div>
       </div>
 
       <div className="rep-filtros">
@@ -75,6 +82,8 @@ export default function Reportes() {
           </div>
         </div>
       </div>
+
+      <Toast mensaje={mensaje} />
     </div>
   )
 }

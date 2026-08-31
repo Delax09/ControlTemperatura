@@ -30,7 +30,6 @@ DEBUG = os.getenv('DEBUG_MODE', 'True') == 'True'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,13 +41,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'registros',
-
     # Librerías de terceros
     'rest_framework',
     'rest_framework.authtoken',
-    
-    # Tus aplicaciones
-    'registros',
 ]
 
 MIDDLEWARE = [

@@ -8,8 +8,28 @@
           padding:14px 18px;background:var(--surface);border:1px solid var(--ring);border-radius:14px}
 .rep-head h1{font-size:17px;margin:0;font-weight:650;letter-spacing:-.2px}
 .rep-head .sub{font-size:12px;color:var(--muted);margin-top:3px}
+.rep-head-acc{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
 .rep-volver{font-size:12.5px;color:var(--blue);text-decoration:none}
 .rep-volver:hover{text-decoration:underline}
+
+/* ---------- Exportar reporte ---------- */
+.exportar{position:relative}
+.btn-exportar{display:inline-flex;align-items:center;gap:7px;background:var(--surface-2);
+              border:1px solid var(--ring);color:var(--ink);border-radius:9px;padding:8px 14px;
+              font-size:12.5px;font-family:inherit;cursor:pointer}
+.btn-exportar:hover{background:var(--surface-3)}
+.btn-exportar[aria-expanded="true"]{background:var(--surface-3);border-color:rgba(255,255,255,.22)}
+.btn-exportar svg{opacity:.75;flex-shrink:0}
+
+/* El menú cuelga del botón alineado a la derecha, para no salirse del panel */
+.exportar-menu{position:absolute;top:calc(100% + 6px);right:0;z-index:40;min-width:264px;
+               background:var(--surface-2);border:1px solid var(--ring);border-radius:11px;padding:5px;
+               box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.exportar-menu button{display:block;width:100%;text-align:left;background:none;border:0;cursor:pointer;
+                      font-family:inherit;color:var(--ink);border-radius:8px;padding:9px 11px}
+.exportar-menu button:hover{background:var(--surface-3)}
+.exportar-menu button b{display:block;font-size:12.5px;font-weight:600}
+.exportar-menu button span{display:block;font-size:11px;color:var(--muted);margin-top:2px;line-height:1.45}
 
 /* ---------- Barra de filtros: una sola fila sobre los gráficos ---------- */
 .rep-filtros{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 14px}
