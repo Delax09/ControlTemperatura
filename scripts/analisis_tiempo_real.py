@@ -1,72 +1,45 @@
-import cv2
-import time
 import requests
-from ultralytics import YOLO
+from datetime import datetime, timezone
 
-# Importar configuración y conexión de cámara
-from app.camara_stream import iniciar_captura
-from app.config import API_URL, HEADERS_API
+# URL de tu backend (Servidor 1). Si está en otra máquina, cambia el localhost por la IP.
+API_URL = "http://127.0.0.1:8000/api/"
 
-# Ruta de tu mejor modelo (la que compartiste al principio)
-RUTA_MODELO = r"runs/detect/runs/detect/modelo_puerta_robusto/weights/best.pt"
-
-def main():
-    print("[INFO] Cargando modelo YOLOv8...")
-    modelo = YOLO(RUTA_MODELO)
-
-    print("[INFO] Iniciando conexión de video CCTV...")
+def obtener_puertas_y_rois():
+    """Descarga las puertas y sus ROIs desde la base de datos."""
     try:
-        cap = iniciar_captura()
-    except ConnectionError as e:
-        print(e)
+        respuesta = requests.get(f"{API_URL}doors/")
+        respuesta.raise_for_status()
+        return respuesta.json()
+    except Exception as e:
+        print(f"Error conectando al backend: {e}")
+        return []
+
+def notificar_puerta_abierta(door_id):
+    """Hace un POST al backend cuando YOLO detecta la puerta abierta."""
+    payload = {
+        "door": door_id,
+        "event_type": "abierta",
+        "open_time": datetime.now(timezone.utc).isoformat()
+    }
+    try:
+        respuesta = requests.post(f"{API_URL}events/", json=payload)
+        respuesta.raise_for_status()
+        # Retornamos el ID del evento creado para poder cerrarlo después
+        return respuesta.json().get('event_id')
+    except Exception as e:
+        print(f"Error al registrar apertura: {e}")
+        return None
+
+def notificar_puerta_cerrada(event_id):
+    """Hace un PATCH al backend para registrar la hora de cierre."""
+    if not event_id:
         return
-
-    while True:
-        ret, frame = cap.read()
         
-        # 1. Manejo de micro-cortes de red de la cámara IP
-        if not ret:
-            print("[CCTV] Advertencia: Se perdió la señal del frame. Intentando reconectar...")
-            cap.release()
-            try:
-                cap = iniciar_captura()
-                continue
-            except ConnectionError:
-                print("[CCTV] Imposible reconectar. Deteniendo análisis.")
-                break
-
-        # 2. Análisis con YOLOv8 (stream=True ahorra memoria)
-        resultados = modelo(frame, stream=True, verbose=False)
-        
-        # 3. Procesar las detecciones
-        for r in resultados:
-            cajas = r.boxes
-            for caja in cajas:
-                # Obtener coordenadas de la caja
-                x1, y1, x2, y2 = map(int, caja.xyxy[0])
-                
-                # Obtener la clase detectada
-                clase_id = int(caja.cls[0])
-                nombre_clase = modelo.names[clase_id]
-                confianza = float(caja.conf[0])
-                
-                # Solo tomamos detecciones con buena confianza
-                if confianza > 0.60:
-                    # Dibujar la caja en el video para verlo en pantalla
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)
-                    cv2.putText(frame, f"{nombre_clase} {confianza:.2f}", (x1, y1 - 10), 
-                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
-
-        # 4. Mostrar el monitoreo en vivo en pantalla
-        cv2.imshow("Monitoreo CCTV - Andenes", frame)
-
-        # Presiona la tecla 'q' para salir del video
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-    # Liberar recursos al terminar
-    cap.release()
-    cv2.destroyAllWindows()
-
-if __name__ == "__main__":
-    main()
+    payload = {
+        "close_time": datetime.now(timezone.utc).isoformat()
+    }
+    try:
+        requests.patch(f"{API_URL}events/{event_id}/", json=payload)
+        print(f"Evento {event_id} cerrado correctamente.")
+    except Exception as e:
+        print(f"Error al registrar cierre: {e}")
