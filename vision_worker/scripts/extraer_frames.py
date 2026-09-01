@@ -1,9 +1,9 @@
 import cv2
 import os
 
-numero_video = 11
+numero_video = "001"
 # Nombre de tu archivo de video
-video_path = f"Videos/VideoEntrenar{numero_video}.mp4"
+video_path = f"Videos/camara_20260901_150053.mp4"
 # Carpeta donde se guardarán las imágenes
 output_folder = f"dataset_puerta{numero_video}"
 
