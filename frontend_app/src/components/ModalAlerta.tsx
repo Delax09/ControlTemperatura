@@ -1,10 +1,10 @@
 /* ==== Modal de detalle de puerta / centro de alertas ====
-   Se abre al hacer click en una card del muro. Todo lo que muestra se deriva
-   de los datos reales de la puerta; los campos que el backend todavía no
-   entrega se marcan explícitamente como pendientes en vez de inventar valores.
+  Se abre al hacer click en una card del muro. Todo lo que muestra se deriva
+  de los datos reales de la puerta; los campos que el backend todavía no
+  entrega se marcan explícitamente como pendientes en vez de inventar valores.
 
-   El componente nunca se desmonta (el muro lo renderiza siempre y le pasa
-   `puerta = null` cuando está cerrado), así las notas del turno sobreviven a
+  El componente nunca se desmonta (el muro lo renderiza siempre y le pasa
+  `puerta = null` cuando está cerrado), así las notas del turno sobreviven a
    abrir y cerrar el modal. */
 
 import { useEffect, useRef, useState } from 'react'

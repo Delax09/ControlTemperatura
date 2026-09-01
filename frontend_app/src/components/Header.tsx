@@ -15,7 +15,6 @@ export default function Header({ puertas }: { puertas: Puerta[] }) {
         <div className="logo">MV</div>
         <div>
           <h1>Muro de Control · Puertas Cámaras de Frío</h1>
-          <div className="sub">Planta San Pedro · 9 puertas monitoreadas por visión computacional</div>
         </div>
       </div>
       <div className="hstats">
