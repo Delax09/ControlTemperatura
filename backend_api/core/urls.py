@@ -7,7 +7,7 @@ from rest_framework.routers import DefaultRouter
 # El frontend es un servidor aparte (Vite/React, ver frontend_app/). Django
 # solo expone la API; aquí no se sirve ninguna plantilla.
 from registros.views import (
-    EventoPuertaViewSet, ejecutar_script_modelo,
+    EventoPuertaViewSet, ejecutar_script_modelo, ejecutar_definir_roi,
     RoleViewSet, UserViewSet, WarehouseViewSet, ZoneViewSet,
     CameraViewSet, DoorViewSet, EventViewSet, LogsViewSet
 )
@@ -31,6 +31,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/ejecutar-modelo/', ejecutar_script_modelo, name='ejecutar-modelo'),
+    path('api/definir-roi/', ejecutar_definir_roi, name='definir-roi'),
 ]
 
 # Servir archivos de la carpeta alertas en desarrollo

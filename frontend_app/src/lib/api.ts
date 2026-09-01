@@ -21,10 +21,26 @@ export async function getPuertas(): Promise<Puerta[]> {
   return (await res.json()) as Puerta[]
 }
 
+export interface RespuestaScript {
+  status: string
+  message: string
+}
+
 /** Arranca el worker de visión (YOLO) en el servidor. */
-export async function ejecutarModelo(): Promise<{ status: string; message: string }> {
+export async function ejecutarModelo(): Promise<RespuestaScript> {
   const res = await fetch(url('/api/ejecutar-modelo/'))
-  return (await res.json()) as { status: string; message: string }
+  return (await res.json()) as RespuestaScript
+}
+
+/**
+ * Abre la herramienta interactiva para dibujar las zonas (ROI) de las puertas.
+ *
+ * Ojo: la ventana de OpenCV se abre en la máquina donde corre Django, no en el
+ * navegador. Solo tiene sentido cuando el muro se opera desde el mismo equipo.
+ */
+export async function definirRoi(): Promise<RespuestaScript> {
+  const res = await fetch(url('/api/definir-roi/'))
+  return (await res.json()) as RespuestaScript
 }
 
 /**

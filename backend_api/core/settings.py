@@ -16,9 +16,12 @@ from dotenv import load_dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+# El .env vive en la raíz del repo (un nivel sobre backend_api) porque también
+# lo leen los scripts de visión en vision_worker/.
+RAIZ_PROYECTO = BASE_DIR.parent
 
 #Cargar el .env
-load_dotenv(BASE_DIR / '.env')
+load_dotenv(RAIZ_PROYECTO / '.env')
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.1/howto/deployment/checklist/
 

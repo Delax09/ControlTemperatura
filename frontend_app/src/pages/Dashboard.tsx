@@ -45,7 +45,7 @@ export default function Dashboard() {
 
       <AlertBar puertas={puertas} onSilenciar={() => silenciar()} onRadio={radio} />
 
-      <Toolbar filtro={filtro} onFiltro={setFiltro} />
+      <Toolbar filtro={filtro} onFiltro={setFiltro} onToast={toast} />
 
       <div className="grid">
         {lista.map((e) => (

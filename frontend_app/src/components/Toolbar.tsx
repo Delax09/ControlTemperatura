@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import BotonRoi from './BotonRoi'
 import type { Filtro } from '../types'
 
 const OPCIONES: { f: Filtro; label: string }[] = [
@@ -10,9 +11,10 @@ const OPCIONES: { f: Filtro; label: string }[] = [
 interface Props {
   filtro: Filtro
   onFiltro: (f: Filtro) => void
+  onToast?: (mensaje: string) => void
 }
 
-export default function Toolbar({ filtro, onFiltro }: Props) {
+export default function Toolbar({ filtro, onFiltro, onToast }: Props) {
   return (
     <div className="toolbar">
       <div className="seg">
@@ -28,6 +30,7 @@ export default function Toolbar({ filtro, onFiltro }: Props) {
       <Link className="btn" to="/reportes" style={{ textDecoration: 'none' }}>
         📊 Reporte general
       </Link>
+      <BotonRoi onToast={onToast} />
       <div className="spacer" />
       <div className="legend">
         <span>

@@ -1,4 +1,6 @@
 Django>=4.2
 djangorestframework>=3.14
+django-cors-headers>=4.4  # CORS para el frontend Vite (puerto distinto)
+python-dotenv>=1.0  # settings.py y app/config.py leen el .env
 psycopg2-binary>=2.9  # Adaptador para PostgreSQL
 django-environ>=0.11  # Para manejar variables de entorno (credenciales BD)
