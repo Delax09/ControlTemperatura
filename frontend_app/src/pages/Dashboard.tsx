@@ -49,7 +49,7 @@ export default function Dashboard() {
 
       <div className="grid">
         {lista.map((e) => (
-          <DoorCard key={e.id} e={e} onAbrir={setSeleccion} />
+          <DoorCard key={e.id} e={e} onAbrir={setSeleccion} onToast={toast} />
         ))}
       </div>
 

@@ -1,4 +1,5 @@
 import CamThumb from './CamThumb'
+import BotonAnalizarVideo from './BotonAnalizarVideo'
 import BotonModelo from './BotonModelo'
 import { COLOR, UMBRAL_CRIT, UMBRAL_SER, UMBRAL_WARN, mmss, nivel } from '../lib/umbrales'
 import type { Puerta } from '../types'
@@ -17,7 +18,13 @@ function Badge({ e }: { e: Puerta }) {
 const colorApertura = (s: number) =>
   s >= UMBRAL_CRIT ? 'var(--crit)' : s >= UMBRAL_SER ? 'var(--serious)' : s >= UMBRAL_WARN ? 'var(--warn)' : '#3a3a37'
 
-export default function DoorCard({ e, onAbrir }: { e: Puerta; onAbrir: (id: string) => void }) {
+interface Props {
+  e: Puerta
+  onAbrir: (id: string) => void
+  onToast?: (mensaje: string) => void
+}
+
+export default function DoorCard({ e, onAbrir, onToast }: Props) {
   const n = nivel(e)
   const pct = Math.min(100, e.abierta ? (e.segundos_abierta / UMBRAL_CRIT) * 100 : 0)
   const drift = Math.abs(e.temp_actual - e.temp_objetivo) > 1.2
@@ -104,7 +111,12 @@ export default function DoorCard({ e, onAbrir }: { e: Puerta; onAbrir: (id: stri
               <small>últimas aperturas</small>
             </div>
           </div>
-          {e.id === PUERTA_CON_MODELO && <BotonModelo />}
+          {e.id === PUERTA_CON_MODELO && (
+            <>
+              <BotonAnalizarVideo puertaId={e.id} onToast={onToast} />
+              <BotonModelo />
+            </>
+          )}
         </div>
       </div>
 

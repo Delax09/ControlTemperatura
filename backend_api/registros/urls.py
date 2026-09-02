@@ -18,8 +18,11 @@ from .views import (
     UserViewSet,
     WarehouseViewSet,
     ZoneViewSet,
+    detener_analisis,
     ejecutar_definir_roi,
     ejecutar_script_modelo,
+    estado_analisis,
+    iniciar_analisis,
 )
 
 router = DefaultRouter()
@@ -41,4 +44,9 @@ urlpatterns = [
     path('', include(router.urls)),
     path('ejecutar-modelo/', ejecutar_script_modelo, name='ejecutar-modelo'),
     path('definir-roi/', ejecutar_definir_roi, name='definir-roi'),
+
+    # --- Analisis del video en vivo, una sesion por puerta ---
+    path('vision/analizar/<str:puerta_id>/', iniciar_analisis, name='analizar-video'),
+    path('vision/analizar/<str:puerta_id>/estado/', estado_analisis, name='analizar-video-estado'),
+    path('vision/detener/<str:puerta_id>/', detener_analisis, name='analizar-video-detener'),
 ]

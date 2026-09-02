@@ -67,3 +67,89 @@ export const PUERTAS_DEMO: Puerta[] = [
     ack: 0,
   },
 ]
+
+/* ---- Analisis del video en vivo (boton "Analizar video" de cada puerta) ---- */
+
+/** Estado de una zona (ROI) tal como lo reporta el worker de visión. */
+export interface ZonaAnalisis {
+  nombre: string
+  estado: 'abierta' | 'cerrada'
+  segundos_abierta: number
+  confianza: number
+  en_alerta: boolean
+}
+
+/** Lo último que escribió el worker en su archivo de estado. */
+export interface AnalisisWorker {
+  puerta: string
+  pid: number
+  origen: string
+  en_vivo: boolean
+  iniciado: string
+  estado: 'iniciando' | 'corriendo' | 'detenido' | 'error'
+  mensaje: string
+  ultimo_latido: string
+  fps_analisis: number
+  /** Si el visor del video anotado está abierto ahora en el servidor. */
+  ventana: boolean
+  eventos_registrados: number
+  eventos_sin_enviar: number
+  reconexiones: number
+  zonas: ZonaAnalisis[]
+}
+
+/**
+ * Respuesta de los tres endpoints de análisis. Comparten forma a propósito:
+ * el botón lee siempre lo mismo, sin importar qué acción disparó.
+ *
+ * `corriendo` lo decide el backend por la antigüedad del latido del worker, no
+ * por si el proceso existe: un worker colgado no cuenta como corriendo.
+ */
+export interface RespuestaAnalisis {
+  status: 'ok' | 'iniciado' | 'ya_corriendo' | 'ocupado' | 'no_corriendo' | 'detencion_pedida' | 'error'
+  message: string
+  puerta: string
+  corriendo: boolean
+  analisis: AnalisisWorker | null
+}
+
+async function pedirAnalisis(
+  path: string,
+  method: 'GET' | 'POST',
+  cuerpo?: unknown,
+): Promise<RespuestaAnalisis> {
+  const res = await fetch(url(path), {
+    method,
+    ...(cuerpo === undefined
+      ? {}
+      : { headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) }),
+  })
+  const data = (await res.json()) as RespuestaAnalisis
+  if (!res.ok && !data?.message) throw new Error(`La API respondió ${res.status}`)
+  return data
+}
+
+/**
+ * Arranca el análisis del video en tiempo real de la cámara de esta puerta.
+ *
+ * Con `ventana` se abre además el visor del video anotado (ROI, cajas y
+ * confianza) para comprobar a ojo que el modelo está encuadrando la puerta.
+ * Ojo: esa ventana se abre en la máquina donde corre Django, no en el
+ * navegador, igual que la herramienta de ROI.
+ */
+export function iniciarAnalisisVideo(puertaId: string, ventana = false): Promise<RespuestaAnalisis> {
+  return pedirAnalisis(`/api/vision/analizar/${encodeURIComponent(puertaId)}/`, 'POST', { ventana })
+}
+
+/** Consulta si el análisis sigue vivo y qué lleva registrado. */
+export function estadoAnalisisVideo(puertaId: string): Promise<RespuestaAnalisis> {
+  return pedirAnalisis(`/api/vision/analizar/${encodeURIComponent(puertaId)}/estado/`, 'GET')
+}
+
+/**
+ * Pide al worker que termine. No lo mata: el worker cierra la apertura que
+ * tenga en curso y recién entonces sale, así no queda un evento sin cierre.
+ */
+export function detenerAnalisisVideo(puertaId: string): Promise<RespuestaAnalisis> {
+  return pedirAnalisis(`/api/vision/detener/${encodeURIComponent(puertaId)}/`, 'POST')
+}

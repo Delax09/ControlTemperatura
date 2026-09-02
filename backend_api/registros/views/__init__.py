@@ -7,7 +7,14 @@ from .camera import CameraViewSet
 from .door import DoorViewSet
 from .event import EventViewSet
 from .logs import LogsViewSet
-from .vision import obtener_datos, ejecutar_script_modelo, ejecutar_definir_roi
+from .vision import (
+    obtener_datos,
+    ejecutar_script_modelo,
+    ejecutar_definir_roi,
+    iniciar_analisis,
+    estado_analisis,
+    detener_analisis,
+)
 
 __all__ = [
     'EventoPuertaViewSet',  # Este se puede eliminar al insertar la base de datos
@@ -22,4 +29,7 @@ __all__ = [
     'obtener_datos',
     'ejecutar_script_modelo',
     'ejecutar_definir_roi',
+    'iniciar_analisis',
+    'estado_analisis',
+    'detener_analisis',
 ]
