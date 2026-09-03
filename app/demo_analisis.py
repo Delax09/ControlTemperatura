@@ -23,7 +23,6 @@ import sys
 import time
 
 import cv2
-from ultralytics import YOLO
 
 from app.analisis import (
     ALTO_VENTANA,
@@ -35,6 +34,7 @@ from app.analisis import (
     IMGSZ_POR_DEFECTO,
     RUTA_MODELO,
     analizar_frame,
+    cargar_modelo,
     crear_estados,
     dibujar,
 )
@@ -70,7 +70,7 @@ def main():
         return 1
 
     print("[DEMO] Cargando modelo YOLO...")
-    modelo = YOLO(RUTA_MODELO)
+    modelo = cargar_modelo(RUTA_MODELO, "DEMO")
 
     zonas = cargar_rois(origen)
     if zonas:

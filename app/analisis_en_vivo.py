@@ -27,7 +27,6 @@ import traceback
 from datetime import datetime
 
 import cv2
-from ultralytics import YOLO
 
 from app.analisis import (
     CLASES_ABIERTA,
@@ -37,6 +36,7 @@ from app.analisis import (
     RUTA_MODELO,
     SEGUNDOS_ALERTA,
     analizar_frame,
+    cargar_modelo,
     crear_estados,
     dibujar,
     hora,
@@ -130,7 +130,13 @@ def main():
     archivo_estado.escribir("iniciando", resumen_zonas(estados), mensaje="Cargando el modelo")
 
     print("[VIVO] Cargando modelo YOLO...")
-    modelo = YOLO(RUTA_MODELO)
+    try:
+        modelo = cargar_modelo(RUTA_MODELO, "VIVO")
+    except FileNotFoundError as error:
+        print(f"[ERROR] {error}")
+        archivo_estado.escribir("error", resumen_zonas(estados), mensaje=str(error))
+        limpiar_detencion(args.puerta)
+        return 1
 
     archivo_estado.escribir("iniciando", resumen_zonas(estados), mensaje="Conectando a la camara")
     print("[VIVO] Conectando a la camara...\n")

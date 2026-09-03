@@ -5,7 +5,7 @@ Aqui vive la logica que comparten los dos frentes que analizan la camara:
 
   * app/demo_analisis.py    -> demo manual, no toca el backend
   * app/analisis_en_vivo.py -> worker que arranca el boton "Analizar video"
-                               del muro y publica los eventos en la API
+                            del muro y publica los eventos en la API
 
 Se separo del archivo de la demo para que el worker de produccion no tenga que
 importar desde un modulo de demostracion: los dos consumen este.
@@ -16,9 +16,15 @@ from datetime import datetime
 import cv2
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-RUTA_MODELO = os.path.join(BASE_DIR, "runs/detect/runs/detect/modelo_puerta_robusto/weights/best.pt")
 
-UMBRAL_CONFIANZA = 0.55
+# Pesos del ultimo entrenamiento. Se puede apuntar a otra corrida sin tocar el
+# codigo con la variable de entorno RUTA_MODELO_YOLO (ruta absoluta o relativa
+# a la raiz del proyecto).
+MODELO_POR_DEFECTO = "runs/detect/runs/detect/modelo_puerta_robusto-3/weights/best.pt"
+_ruta_env = os.environ.get("RUTA_MODELO_YOLO", "").strip()
+RUTA_MODELO = os.path.join(BASE_DIR, _ruta_env or MODELO_POR_DEFECTO)
+
+UMBRAL_CONFIANZA = 0.60
 SEGUNDOS_CONFIRMACION = 1.5  # cuánto debe sostenerse un cambio para darlo por cierto
 SOLAPAMIENTO_MINIMO = 0.35   # cuánto de la caja debe caer dentro de la ROI
 SEGUNDOS_ALERTA = 30         # puerta abierta más de esto = alerta
@@ -38,6 +44,31 @@ ANCHO_VENTANA, ALTO_VENTANA = 1024, 576
 VERDE, ROJO, AMARILLO, BLANCO = (0, 200, 0), (0, 0, 255), (0, 200, 255), (255, 255, 255)
 
 NOMBRE_ESCENA_COMPLETA = "Escena completa"
+
+
+def cargar_modelo(ruta=RUTA_MODELO, etiqueta="MODELO"):
+    """Carga los pesos YOLO y deja en consola cual corrida se esta usando.
+
+    Sirve para comprobar de un vistazo que se tomo el ultimo entrenamiento y no
+    una corrida vieja: imprime la ruta, la fecha del archivo y las clases.
+    """
+    from ultralytics import YOLO
+
+    if not os.path.exists(ruta):
+        raise FileNotFoundError(f"No se encontro el modelo en {ruta}")
+
+    modificado = datetime.fromtimestamp(os.path.getmtime(ruta)).strftime("%Y-%m-%d %H:%M")
+    corrida = os.path.basename(os.path.dirname(os.path.dirname(ruta)))
+    tamano = os.path.getsize(ruta) / (1024 * 1024)
+
+    print(f"[{etiqueta}] Pesos:   {ruta}")
+    print(f"[{etiqueta}] Corrida: {corrida}  ({modificado}, {tamano:.1f} MB)")
+
+    modelo = YOLO(ruta)
+    nombres = getattr(modelo, "names", None) or {}
+    if nombres:
+        print(f"[{etiqueta}] Clases:  {', '.join(str(n) for n in nombres.values())}")
+    return modelo
 
 
 def hora():

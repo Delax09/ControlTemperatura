@@ -1,3 +1,5 @@
+import os
+
 import cv2
 import requests
 import json
@@ -7,9 +9,9 @@ from ultralytics import YOLO
 
 # --- 1. CONFIGURACIÓN DEL MICROSERVICIO ---
 API_URL = "http://127.0.0.1:8000/api/"
-RUTA_MODELO = "runs/detect/runs/detect/modelo_puerta_robusto/weights/best.pt"
+RUTA_MODELO = "runs/detect/runs/detect/modelo_puerta_robusto-3/weights/best.pt"
 CLASE_OBJETIVO = "puerta_abierta"
-UMBRAL_CONFIANZA = 0.55
+UMBRAL_CONFIANZA = 0.60
 FRAMES_CONFIRMACION = 5
 
 # Funciones de comunicación con el Backend
@@ -109,7 +111,11 @@ class SeguimientoPuertaAPI:
 
 
 # --- 3. INICIALIZACIÓN DE YOLO Y VIDEO ---
+modificado = datetime.fromtimestamp(os.path.getmtime(RUTA_MODELO)).strftime("%Y-%m-%d %H:%M")
+print(f"[PRUEBA] Pesos:   {RUTA_MODELO}")
+print(f"[PRUEBA] Corrida: {os.path.basename(os.path.dirname(os.path.dirname(RUTA_MODELO)))}  ({modificado})")
 model = YOLO(RUTA_MODELO)
+print(f"[PRUEBA] Clases:  {', '.join(str(n) for n in model.names.values())}")
 origen_video = 0 # Cambia esto por tu RTSP si aplica
 cap = cv2.VideoCapture(origen_video)
 
